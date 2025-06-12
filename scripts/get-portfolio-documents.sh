@@ -16,7 +16,7 @@ file=$script_path/xml/listportfoliodocuments-$bookingid.xml
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="listportfoliodocuments" sitename="ignite.site.traveltek.net" bookingid="'${bookingid}'" externalreference="" />
+    <method action="listportfoliodocuments" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" externalreference="" />
 </request>'
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listportfoliodocuments" \

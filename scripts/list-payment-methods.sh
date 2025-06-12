@@ -9,7 +9,7 @@ $script_path/control-tables.sh ${ca_db_table_prefix}_payment_methods
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="listpaymentmethods" sitename="ignite.site.traveltek.net"/>
+    <method action="listpaymentmethods" sitename="'${ca_tt_sitename:-0}'"/>
   </request>'
 
 file=$script_path/xml/listpaymentmethods.xml

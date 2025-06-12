@@ -23,16 +23,16 @@ if [ -z "${paymentmethodid}" ];then
   paymentmethodid=6389
 fi
 
-chargetype=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-SELECT chargetype FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
+# chargetype=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+# SELECT chargetype FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
 
-chargevalue=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-SELECT chargevalue FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
+# chargevalue=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+# SELECT chargevalue FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
 
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="addreceipt" sitename="ignite.site.traveltek.net" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" />
+    <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" />
   </request>'
 
 
@@ -46,7 +46,7 @@ curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/a
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="createdocument" sitename="ignite.site.traveltek.net" bookingid="'${bookingid}'" documentid ="70894">
+    <method action="createdocument" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" documentid ="70894">
       <attachments/>
     </method>
   </request>'

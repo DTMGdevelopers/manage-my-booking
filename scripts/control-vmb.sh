@@ -19,7 +19,7 @@ enddate=$(date +'%Y-%m-%d')
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="listmodifiedportfolios" sitename="ignite.site.traveltek.net" sincelastchecked="1" startdate="'${startdate}'" enddate="'${enddate}'" /> 
+    <method action="listmodifiedportfolios" sitename="'${ca_tt_sitename:-0}'" sincelastchecked="1" startdate="'${startdate}'" enddate="'${enddate}'" /> 
 </request>'
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listmodifiedportfolios" \
@@ -44,7 +44,7 @@ file=$script_path/xml/getportfolio-$id.xml
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="getportfolio" sitename="ignite.site.traveltek.net" bookingid="'${id}'" externalreference="" />
+    <method action="getportfolio" sitename="'${ca_tt_sitename:-0}'" bookingid="'${id}'" externalreference="" />
 </request>'
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/getportfolio" \
