@@ -16,7 +16,7 @@ if [ -z "${outstanding}" ];then
 xml='xml=<?xml version="1.0"?>
   <request>
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${ca_tt_sid:-0}'" currency="'${ca_tt_password}'" />
+    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${ca_tt_sid:-0}'" currency="'${ca_tt_currency:-0}'" />
   </request>'
 else
 xml='xml=<?xml version="1.0"?>
