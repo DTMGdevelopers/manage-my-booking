@@ -2,6 +2,8 @@
 	# Generated: 2021-12-13 3:10:34
 	# https://www.iprogress.co.uk
 
+	use Symfony\Component\Intl\Currencies;
+
 	session_start();
 
 	ini_set('display_errors', 0);
@@ -180,6 +182,11 @@
 		}
 
 		add_action('wp_enqueue_scripts', 'public_assets');
+
+	# Currency
+		function Currency($code) {
+			return Currencies::getSymbol($code);
+		}
 
 	# TinyMCE Font Size Support
 		function tinymce_buttons($buttons) {
