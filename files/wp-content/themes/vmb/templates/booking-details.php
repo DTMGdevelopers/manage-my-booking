@@ -3,6 +3,8 @@
 	function shortcode_booking_details() {
 		global $wpdb, $booking_id;
 
+		$currency_code = get_field('site_currency', 'option');
+
 		$html = [];
 
 		if ($booking_id) {
@@ -335,14 +337,14 @@
 				$html[] = '<div id="booking-cost" class="mt-5 mb-3">';
 					$html[] = '<div class="row">';
 						$html[] = '<div class="col-lg-4">';
-							$html[] = '<p class="m-0"><strong>Total price: $'.$thisToolbox->FormatNumber($thisBooking->TotalCost()).'</strong></p>';
+							$html[] = '<p class="m-0"><strong>Total price: '.Currency($currency_code).$thisToolbox->FormatNumber($thisBooking->TotalCost()).'</strong></p>';
 						$html[] = '</div>';
 						$html[] = '<div class="col-lg-4">';
-							$html[] = '<p class="m-0"><strong>Amount paid: $'.$thisToolbox->FormatNumber($thisBooking->AmountPaid()).'</strong></p>';
+							$html[] = '<p class="m-0"><strong>Amount paid: '.Currency($currency_code).$thisToolbox->FormatNumber($thisBooking->AmountPaid()).'</strong></p>';
 						$html[] = '</div>';
 						$html[] = '<div class="col-lg-4">';
 							if ($thisBooking->TotalDue() >= 0) {
-								$html[] = '<p class="m-0"><strong>Balance due: $'.$thisToolbox->FormatNumber($thisBooking->TotalDue()).'</strong></p>';
+								$html[] = '<p class="m-0"><strong>Balance due: '.Currency($currency_code).$thisToolbox->FormatNumber($thisBooking->TotalDue()).'</strong></p>';
 							}
 						$html[] = '</div>';
 					$html[] = '</div>';

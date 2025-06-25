@@ -3,6 +3,8 @@
 	function shortcode_make_payment() {
 		global $wpdb, $booking_id;
 
+		$currency_code = get_field('site_currency', 'option');
+
 		//if (isset($_GET['payment']) && $_GET['payment'] === 'adyen') {
 
 			$html = [];
@@ -13,7 +15,7 @@
 					$html[] = '<div class="col-lg-3">';
 
 						$html[] = '<div class="input-group">';
-							$html[] = '<label for="amount" class="input-group-text">$</label>';
+							$html[] = '<label for="amount" class="input-group-text">'.Currency($currency_code).'</label>';
 							$html[] = '<input type="number" step="0.01" min="0.00" name="amount" id="amount" class="form-control" value="" placeholder="000.00" required>';
 						$html[] = '</div>';
 
