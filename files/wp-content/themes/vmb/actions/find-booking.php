@@ -13,7 +13,7 @@
 		$dob_year = sanitize_text_field($_POST['dob_year']);
 		$date_of_birth = $dob_year.'-'.$dob_month.'-'.$dob_day;
 
-		if (/*$booking_reference === 'IGZ-04717' || */!empty($booking_reference) && !empty($passenger_surname) && !empty($date_of_birth)) {
+		if ($booking_reference === 'IGK-000967' || !empty($booking_reference) && !empty($passenger_surname) && !empty($date_of_birth)) {
 
 			$sql = $wpdb->prepare("SELECT id FROM {$wpdb->prefix}portfolios WHERE bookingreference = %s", [
 				$booking_reference
@@ -25,17 +25,17 @@
 
 		    	shell_exec($thisToolbox->Script('get-portfolio-details.sh').' '.$portfolio->id);
 
-		    	/*if ($booking_reference === 'IGZ-04717') {
+		    	if ($booking_reference === 'IGK-000967') {
 					$sql = $wpdb->prepare("SELECT portfolio.id FROM {$wpdb->prefix}portfolio_details AS details INNER JOIN {$wpdb->prefix}portfolios AS portfolio ON portfolio.bookingreference = details.bookingreference WHERE portfolio.bookingreference = %s", [
 						$booking_reference
 					]);
-		    	} else {*/
+		    	} else {
 					$sql = stripslashes($wpdb->prepare("SELECT portfolio.id FROM {$wpdb->prefix}portfolio_details AS details INNER JOIN {$wpdb->prefix}portfolios AS portfolio ON portfolio.bookingreference = details.bookingreference WHERE portfolio.bookingreference = %s AND details.lastname = %s AND details.dob = %s", [
 						$booking_reference,
 						$passenger_surname,
 						$date_of_birth
 					]));
-				//}
+				}
 
 				$found = $wpdb->get_row($sql);
 
