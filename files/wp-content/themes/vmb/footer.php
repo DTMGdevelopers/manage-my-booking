@@ -9,7 +9,7 @@
 
 
         <footer>
-            <div class="footer-top">
+            <div class="footer-top test-cg-3e7">
                 <div class="flex">
                     <div class="newsletter">
                         <div class="wrapper">
