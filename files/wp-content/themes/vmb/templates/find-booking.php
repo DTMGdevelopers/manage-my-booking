@@ -17,7 +17,7 @@
 			$html[] = '<div class="row mt-5 mb-4">';
 				$html[] = '<div class="col-lg-3">';
 					$html[] = '<label class="mb-2" for="booking_reference">Booking Reference</label>';
-					$html[] = '<input type="text" name="booking_reference" id="booking_reference" class="form-control" value="" placeholder="Eg: IGZ-1234" required>';
+					$html[] = '<input type="text" name="booking_reference" id="booking_reference" class="form-control" value="" placeholder="Eg: '.get_field('traveltek_site_code', 'option').'-1234" required>';
 				$html[] = '</div>';
 				$html[] = '<div class="col-lg-3">';
 					$html[] = '<label class="mb-2" for="passenger_surname">Primary Passenger Surname</label>';

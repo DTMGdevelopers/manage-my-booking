@@ -283,3 +283,10 @@
 		}
 
 		add_shortcode('if-balance-due', 'shortcode_if_balance_due');
+
+		function shortcode_currency() {
+			$currency_code = get_field('site_currency', 'option');
+			return Currency($currency_code);
+		}
+
+		add_shortcode('currency', 'shortcode_currency');
