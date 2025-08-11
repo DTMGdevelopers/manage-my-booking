@@ -594,3 +594,13 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_insurance" ];then
 	PRIMARY KEY (\`id\`, \`bookingid\`) USING BTREE
 	) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
+
+
+new_column=$(mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; SHOW COLUMNS FROM ${ca_db_table_prefix}_portfolio_segments LIKE 'bookingreference';")
+if [ -z "${new_column}" ];then 
+  mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; 
+  ALTER TABLE ${ca_db_table_prefix}_portfolio_segments
+  ADD COLUMN bookingreference varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;"
+else
+  echo "new_column = ${new_column}" > /dev/null 2>&1
+fi 
