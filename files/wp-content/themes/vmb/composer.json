@@ -1,6 +1,6 @@
 {
     "require": {
         "ozdemirburak/iris": "^2.4",
-        "symfony/intl": "^7.3"
+        "symfony/intl": "^6.0"
     }
 }
