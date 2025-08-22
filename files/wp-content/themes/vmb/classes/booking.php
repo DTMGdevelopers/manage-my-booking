@@ -233,12 +233,13 @@
 	        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}portfolio_flight WHERE bookingid = %d AND status = 'booked'", $this->booking_id);
 	        $results = $wpdb->get_results($sql);
 
-	        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}portfolio_segments WHERE bookingid = %d", $this->booking_id);
-	        $segments = $wpdb->get_results($sql);
-
 	        if (!empty($results)) {
 
 	        	foreach ($results as $result) {
+
+					$sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}portfolio_segments WHERE bookingid = %d AND bookingreference = %s", $this->booking_id, $result->bookingreference);
+					$segments = $wpdb->get_results($sql);
+
 	        		$result->segments = $segments;
 
 	        		$array[] = [

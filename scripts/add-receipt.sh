@@ -31,8 +31,8 @@ fi
 
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
-    <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" />
+    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
+    <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" sendemail="1" />
   </request>'
 
 
@@ -40,12 +40,12 @@ file=$script_path/xml/addreceipt-$bookingid.xml
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/addreceipt" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "$xml" 
+    -d "$xml"
 
-#CREATE THE DOCUMENT 
+#CREATE THE DOCUMENT
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
+    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
     <method action="createdocument" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" documentid ="70894">
       <attachments/>
     </method>
@@ -55,4 +55,4 @@ file=$script_path/xml/createdocument.xml
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/createdocument" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "$xml" 
+    -d "$xml"

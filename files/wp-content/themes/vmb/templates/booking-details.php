@@ -25,6 +25,10 @@
 
 			$thisDetails = $thisBooking->SortDates([$thisTransfers, $thisHotels, $thisFlights, $thisCruises, $thisAttractions, $thisTickets, $thisInsurance]);
 
+			// if (is_user_logged_in() === true) {
+			// 	echo '<pre>'.print_r($thisFlights, true).'</pre>';
+			// }
+
 			/*if ($thisBooking->BookingReference() === 'MYC-20442') {
 				echo '<pre>'. print_r($thisDetails, true) .'</pre>';
 			}*/
@@ -116,6 +120,8 @@
 
 						$html[] = '<div class="border-bottom pb-4 mt-5">';
 
+							## MARK: Transfer
+
 							if ($thisDetail['type'] === 'transfer') {
 								$html[] = '<div>';
 									$html[] = '<h3 class="mb-4">Transfer Reservation ID: '.$thisDetail['data']->bookingreference.'</h3>';
@@ -137,6 +143,8 @@
 									$html[] = '</div>';
 								$html[] = '</div>';
 							}
+
+							## MARK: Hotel
 
 							if ($thisDetail['type'] === 'hotel') {
 								$html[] = '<div>';
@@ -160,6 +168,8 @@
 								$html[] = '</div>';
 							}
 
+							## MARK: Flight
+
 							if ($thisDetail['type'] === 'flight') {
 								$html[] = '<div>';
 									$html[] = '<h3 class="mb-4">Flights Reservation ID: '.$thisDetail['data']->vendorreference.'</h3>';
@@ -175,8 +185,13 @@
 
 													$html[] = '<div class="col-lg-5">';
 														$html[] = '<p class="m-0"><strong>'.$segment->depname.' ('.$segment->depaircode.') to '.$segment->destname.' ('.$segment->destaircode.')</strong></p>';
-														$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($segment->departuredate)).', '.wp_date(get_option('time_format'), strtotime($segment->departuretime)).'</p>';
-														$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($segment->arrivaldate)).', '.wp_date(get_option('time_format'), strtotime($segment->arrivaltime)).'</p>';
+														if ($segment->journey === 'out') {
+															$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->outdepartdate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->outdepartdate)).'</p>';
+															$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->outarrivedate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->outarrivedate)).'</p>';
+														} else {
+															$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->indepartdate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->indepartdate)).'</p>';
+															$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->inarrivedate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->inarrivedate)).'</p>';
+														}
 													$html[] = '</div>';
 
 													$html[] = '<div class="col-lg-6">';
@@ -215,6 +230,8 @@
 								$html[] = '</div>';
 							}
 
+							## MARK: Cruise
+
 							if ($thisDetail['type'] === 'cruise') {
 								$html[] = '<div>';
 									$html[] = '<h3 class="mb-4">Cruiseline Reference: '.$thisDetail['data']->bookingreference.'</h3>';
@@ -247,6 +264,8 @@
 								$html[] = '</div>';
 							}
 
+							## MARK: Attraction
+
 							if ($thisDetail['type'] === 'attraction') {
 								$html[] = '<div>';
 									$html[] = '<h3 class="mb-4">Attraction: '.$thisDetail['data']->bookingreference.'</h3>';
@@ -275,6 +294,8 @@
 
 								$html[] = '</div>';
 							}
+
+							## MARK: Ticket
 
 							if ($thisDetail['type'] === 'ticket') {
 								$html[] = '<div>';
@@ -305,6 +326,8 @@
 
 								$html[] = '</div>';
 							}
+
+							## MARK: Insurance
 
 							if ($thisDetail['type'] === 'insurance') {
 								$html[] = '<div>';
