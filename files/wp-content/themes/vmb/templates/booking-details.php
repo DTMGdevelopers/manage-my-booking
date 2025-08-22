@@ -185,13 +185,13 @@
 
 													$html[] = '<div class="col-lg-5">';
 														$html[] = '<p class="m-0"><strong>'.$segment->depname.' ('.$segment->depaircode.') to '.$segment->destname.' ('.$segment->destaircode.')</strong></p>';
-														if ($segment->journey === 'out') {
-															$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->outdepartdate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->outdepartdate)).'</p>';
-															$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->outarrivedate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->outarrivedate)).'</p>';
-														} else {
-															$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->indepartdate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->indepartdate)).'</p>';
-															$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->inarrivedate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->inarrivedate)).'</p>';
-														}
+														// if ($segment->journey === 'out') {
+															$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($segment->depdate)).', '.wp_date(get_option('time_format'), strtotime($segment->departuretime)).'</p>';
+															$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($segment->arrivaldate)).', '.wp_date(get_option('time_format'), strtotime($segment->arrivaltime)).'</p>';
+														// } else {
+														// 	$html[] = '<p class="m-0">Depart '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->indepartdate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->indepartdate)).'</p>';
+														// 	$html[] = '<p class="m-0">Arrive '.wp_date(get_option('date_format'), strtotime($thisDetail['data']->inarrivedate)).', '.wp_date(get_option('time_format'), strtotime($thisDetail['data']->inarrivedate)).'</p>';
+														// }
 													$html[] = '</div>';
 
 													$html[] = '<div class="col-lg-6">';
