@@ -44,28 +44,34 @@ sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' $file
                                                                                                         
                                                                                                         
 ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
-tradingname=$(xmlstarlet sel -t -m "response/results/result/bookingdetails/@tradingname" -v . -n  $file )
+tradingname=$(xmlstarlet sel -t -m "response/results/result/bookingdetails/@tradingname" -v . -n  "${file}" )
 
-if [ "${tradingname}" = "Explorations by Norwegian - Trade Partners" ] || [ "${tradingname}" = "My Cruises River Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises - Trade Partners" ] || [ "${tradingname}" = "My Cruises Touring Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises Trade" ] || [ "${tradingname}" = "My Holiday Touring Trade" ] || [ "${tradingname}" = "MyCruises River Collection - Trade Partners" ] || [ "${tradingname}" = "My Cruises Exclusive Luxury Collection - Trade Partners" ] || [ "${tradingname}" = "Flight Centre Exclusives - Trade Partners" ] ;then
-echo "This booking is a trade account"
-mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-DELETE FROM ${ca_db_table_prefix}_portfolios WHERE id = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_document WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_attachment WHERE bookingid = ${bookingid};
-DELETE FROM ${ca_db_table_prefix}_portfolio_session WHERE bookingid = ${bookingid};"
-exit
+# shellcheck disable=SC2154
+if [[ ",${ca_trading_name_whitelist}," != *",${tradingname},"* ]]; then
+    echo "This booking is a trade account"
+    exit 1
 fi
+
+# if [ "${tradingname}" = "Explorations by Norwegian - Trade Partners" ] || [ "${tradingname}" = "My Cruises River Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises - Trade Partners" ] || [ "${tradingname}" = "My Cruises Touring Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises Trade" ] || [ "${tradingname}" = "My Holiday Touring Trade" ] || [ "${tradingname}" = "MyCruises River Collection - Trade Partners" ] || [ "${tradingname}" = "My Cruises Exclusive Luxury Collection - Trade Partners" ] || [ "${tradingname}" = "Flight Centre Exclusives - Trade Partners" ] ;then
+
+# mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+# DELETE FROM ${ca_db_table_prefix}_portfolios WHERE id = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_document WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_attachment WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix}_portfolio_session WHERE bookingid = ${bookingid};"
+# exit
+# fi
 
 
 xmlstarlet ed --inplace -r "response/results/result/bookingdetails/passengers" -v passenger_details $file
