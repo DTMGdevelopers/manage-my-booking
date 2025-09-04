@@ -1,8 +1,9 @@
 #!/bin/bash
+
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-sed -i -e 's/\r$//' $script_path/config.sh
-source $script_path/config.sh
-source $script_path/functions.sh
+
+# shellcheck disable=SC1091
+source "${script_path}/functions.sh"
 
 bookingid=$1
 
@@ -45,10 +46,29 @@ sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' $file
                                                                                                         
 ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
 tradingname=$(xmlstarlet sel -t -m "response/results/result/bookingdetails/@tradingname" -v . -n  "${file}" )
+echo "Trading Name: ${tradingname}"
+echo "Whitelist: ${ca_trading_name_whitelist}"
+
 
 # shellcheck disable=SC2154
-if [[ ",${ca_trading_name_whitelist}," != *",${tradingname},"* ]]; then
+if [[ ",${ca_trading_name_whitelist}," != *"${tradingname}"* ]]; then
     echo "This booking is a trade account"
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+	DELETE FROM ${ca_db_table_prefix}_portfolios WHERE id = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_document WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_attachment WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix}_portfolio_session WHERE bookingid = ${bookingid};"
     exit 1
 fi
 
@@ -834,7 +854,3 @@ ROWS IDENTIFIED BY '<insurance_element>'
 	vatrequirement,
 	voucherurl
 );"
-
-
-
-
