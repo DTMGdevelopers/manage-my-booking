@@ -43,7 +43,7 @@ curl -o "${file}" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.
     -d "$xml"
 
 #CREATE THE DOCUMENT
-# Hard coded values need to be replaced with dynamic values if possible in the future via the config file, OR, use the sendemai
+# Hard coded values need to be replaced with dynamic values if possible in the future via the config file, OR, use the sendemail - need confirmtation from TT if tradingnameid is required
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
