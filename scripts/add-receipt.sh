@@ -1,8 +1,9 @@
 #!/bin/bash
+
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-sed -i -e 's/\r$//' $script_path/config.sh
-source $script_path/config.sh
-source $script_path/functions.sh
+
+# shellcheck disable=SC1091
+source "${script_path}/config.sh"
 
 bookingid=${1}
 
@@ -16,7 +17,7 @@ transactionref=$(xmlstarlet sel -t -m "/transaction/transactionref" -v . -n $fil
 cardno=$(xmlstarlet sel -t -m "/transaction/cardno" -v . -n $file )
 
 paymentmethodid=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-SELECT id FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
+SELECT id FROM ${ca_db_table_prefix:-0}_payment_methods WHERE creditcardcode = '$cardtype';")
 
 #if we dont get a paymentmrthodid than just use 6389 as its teh default from TravelTek
 if [ -z "${paymentmethodid}" ];then
@@ -35,7 +36,6 @@ xml='xml=<?xml version="1.0"?>
     <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" sendemail="1" />
   </request>'
 
-
 file=$script_path/xml/addreceipt-$bookingid.xml
 
 curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/addreceipt" \
@@ -46,7 +46,7 @@ curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/a
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
-    <method action="createdocument" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" documentid ="70894">
+    <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="70894">
       <attachments/>
     </method>
   </request>'
