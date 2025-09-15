@@ -47,7 +47,7 @@ curl -o "${file}" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
-    <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="127265" tradingnameid="5708" >
+    <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="127265" >
       <attachments/>
     </method>
   </request>'
