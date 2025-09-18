@@ -1,8 +1,12 @@
 <?php
 	if (!function_exists('is_user_logged_in')) {
-		$pieces = explode("/public/", dirname(__FILE__).'/');
-		$public = $pieces[0].'/public';
-		include($public."/wp-load.php");
+		if (isset($_SERVER['HOME']) && file_exists($_SERVER['HOME']."/files/wp-load.php")) {
+			include($_SERVER['HOME']."/files/wp-load.php");
+		} else if (file_exists("/srv/users/vmb/apps/vmb/public/wp-load.php")) {
+			include("/srv/users/vmb/apps/vmb/public/wp-load.php");
+		} else {
+			exit;
+		}
 	}
 
 	//wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', 'VMB Payment Response 1', json_encode($_POST));
