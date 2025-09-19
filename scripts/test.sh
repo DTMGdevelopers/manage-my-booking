@@ -4,10 +4,6 @@ script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # shellcheck disable=SC1091
 source "${script_path}/functions.sh"
 
-#!/bin/bash
-
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 #MARK: files and folders
 # mkdir -p "${wordpress_path}"/log/
 # mkdir -p "${wordpress_path}"/volume/
