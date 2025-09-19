@@ -16,6 +16,12 @@
     	define('VMB_COOKIE', 'vmb_booking');
     	define('VMB_SESSION', 'vmb_booking_verify');
 
+	# ACF Groups
+	if (home_url() !== 'https://vmb.mycruises.com.au') {
+		include("acf-groups/page-settings.php");
+		include("acf-groups/theme-settings.php");
+	}
+
 	# Classes
 		include("classes/toolbox.php");
 		include("classes/brand.php");
