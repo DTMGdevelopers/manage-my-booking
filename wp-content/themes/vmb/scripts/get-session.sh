@@ -28,7 +28,7 @@ fi
 
 file=$script_path/xml/createsession-${bookingid}.xml
 
-curl -s -o $file -X POST --url "https://fusionapi.traveltek.net/0.9/interface.pl" \
+curl -s -o $file -X POST --url ""'${ca_tt_endpoint:-0}'"" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "$xml" 
 

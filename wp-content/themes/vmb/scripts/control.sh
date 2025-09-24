@@ -2,31 +2,29 @@
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # shellcheck disable=SC1091
-source "${script_path:-0}"/functions.sh
-
-#CHECK THIS SCRIPT ISNT ALREADY RUNNING 
-if [[ "`pidof -x $(basename $0) -o %PPID`" ]]; then
-	echo "This script is already running with PID `pidof -x $(basename $0) -o %PPID`" #> $script_path/log/search.log
-	#echo "This script is already running with PID `pidof -x $(basename $0) -o %PPID`" 
-	exit
-fi
+source "${script_path}/config.sh"
 
 file=${script_path:-0}/xml/listmodifiedportfolios.xml
 
-startdate=$(date --date="${dataset_date} -1 day" +%Y-%m-%d) 
+startdate=$(date -d "-1 day" +%Y-%m-%d) 
 enddate=$(date +'%Y-%m-%d') 
+
+echo "Start date: $startdate"
+echo "End date: $enddate"
+
 
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />  
+    <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" />  
     <method action="listmodifiedportfolios" sitename="'${ca_tt_sitename:-0}'" sincelastchecked="1" startdate="'${startdate}'" enddate="'${enddate}'" /> 
 </request>'
 
-curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listmodifiedportfolios" \
+echo "xml = $xml"
+curl -o "$file" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listmodifiedportfolios" \
 		-H "Content-Type: application/x-www-form-urlencoded" \
 		-d "$xml" 
 
-mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+mysql --login-path=local -N --execute="USE ${ca_db_name:-0};
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
 INTO TABLE ${ca_db_table_prefix:-0}_portfolios 

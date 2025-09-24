@@ -29,7 +29,7 @@ EOF
 cache_dir="${script_path}/.cache"
 mkdir -p "$cache_dir"
 cache_file="${cache_dir}/ca_vars.cache"
-rm -f "$cache_file"
+#rm -f "$cache_file"
 cache_ttl=86400 # 24 hours in seconds
 
 # Flush cache if requested
@@ -70,9 +70,9 @@ else
     echo "ca_tt_endpoint=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_ca_tt_endpoint';")\""
     echo "ca_tt_endpoint_secure=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_ca_tt_endpoint_secure';")\""
     echo "ca_tt_password=\"$(mysql --login-path=local -N --default-character-set=utf8 --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_password';" | jq --raw-input --raw-output '. | @uri')\""
-    echo "ca_tt_sid=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_sid';")\""
+    #echo "ca_tt_sid=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_sid';")\""
     echo "ca_tt_sitename=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_site';")\""
-    echo "ca_tt_status=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT IF(option_value=1, 'Live', 'Test') FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_ca_tt_status';")\""
+    echo "ca_tt_status=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT IF(option_value=1, 'Live', 'Test') FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_status';")\""
     echo "ca_tt_username=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_username';")\""
     echo "ca_theme=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'template';")\""
     echo "ca_trading_name_whitelist=\"$(mysql --login-path=local -N --execute="USE $ca_db_name; SELECT option_value FROM ${ca_db_table_prefix}_options WHERE option_name = 'options_traveltek_trading_name_whitelist';")\""
