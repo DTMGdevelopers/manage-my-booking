@@ -21,7 +21,7 @@ SELECT id FROM ${ca_db_table_prefix:-0}_payment_methods WHERE creditcardcode = '
 
 #if we dont get a paymentmrthodid than just use 6389 as its teh default from TravelTek
 if [ -z "${paymentmethodid}" ];then
-  paymentmethodid=6389
+  paymentmethodid="${ca_default_payment_id:-0}"
 fi
 
 # chargetype=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
@@ -36,7 +36,7 @@ xml='xml=<?xml version="1.0"?>
     <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref}'" cardno="'${cardno}'" useportfoliobranch="1" />
   </request>'
 
-file=$script_path/xml/addreceipt-$bookingid.xml
+file="${script_path}/xml/addreceipt-$bookingid.xml"
 
 curl -o "${file}" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/addreceipt" \
     -H "Content-Type: application/x-www-form-urlencoded" \
@@ -47,7 +47,7 @@ curl -o "${file}" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" />
-    <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="127265" >
+    <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="'${ca_document_id:-0}'" >
       <attachments/>
     </method>
   </request>'
