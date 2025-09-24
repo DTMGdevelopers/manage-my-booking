@@ -1,7 +1,8 @@
 #!/bin/bash
+
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-sed -i -e 's/\r$//' "${script_path}/config.sh"
-source "${script_path}/config.sh"
+
+# shellcheck disable=SC1091
 source "${script_path}/functions.sh"
 
 bookingid=$1
@@ -15,18 +16,18 @@ file=${script_path}/xml/listportfoliodocuments-$bookingid.xml
 
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
+    <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" /> 
     <method action="listportfoliodocuments" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" externalreference="" />
 </request>'
 
-curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listportfoliodocuments" \
+curl -o "$file" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/listportfoliodocuments" \
 		-H "Content-Type: application/x-www-form-urlencoded" \
 		-d "$xml" 
 
 #REMOVE THE NAMESPACE FROM THE XML OR XMLSTARLET CAN PROCESS IT
-sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' $file
+sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' "$file"
 
-mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 DELETE FROM ${ca_db_table_prefix:-0}_portfolio_document WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 

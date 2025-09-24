@@ -24,11 +24,11 @@ if [ -z "${paymentmethodid}" ];then
   paymentmethodid=6389
 fi
 
-# chargetype=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-# SELECT chargetype FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
+# chargetype=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+# SELECT chargetype FROM ${ca_db_table_prefix:-0}_payment_methods WHERE creditcardcode = '$cardtype';")
 
-# chargevalue=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-# SELECT chargevalue FROM ${ca_db_table_prefix}_payment_methods WHERE creditcardcode = '$cardtype';")
+# chargevalue=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+# SELECT chargevalue FROM ${ca_db_table_prefix:-0}_payment_methods WHERE creditcardcode = '$cardtype';")
 
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
@@ -46,7 +46,7 @@ curl -o "${file}" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.
 # Hard coded values need to be replaced with dynamic values if possible in the future via the config file, OR, use the sendemail - need confirmtation from TT if tradingnameid is required
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" />
+    <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" />
     <method action="createdocument" sitename="'${ca_tt_sitename}'" bookingid="'${bookingid}'" documentid="127265" >
       <attachments/>
     </method>

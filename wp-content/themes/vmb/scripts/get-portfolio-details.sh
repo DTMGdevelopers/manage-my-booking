@@ -19,102 +19,88 @@ file=$script_path/xml/getportfolio-${bookingid}.xml
 
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
+    <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" /> 
     <method action="getportfolio" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" externalreference="" />
 </request>'
 
-curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/getportfolio" \
+curl -o "$file" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/getportfolio" \
 		-H "Content-Type: application/x-www-form-urlencoded" \
 		-d "$xml" 
 
 #REMOVE THE NAMESPACE FROM THE XML OR XMLSTARLET CAN NOT PROCESS IT
-sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' $file
+sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' "$file"
 
-####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
-                                                                                                        
-                                                                                                        
-                                                                                                        
-######## ########     ###    ########  #### ##    ##  ######      ##    ##    ###    ##     ## ######## 
-   ##    ##     ##   ## ##   ##     ##  ##  ###   ## ##    ##     ###   ##   ## ##   ###   ### ##       
-   ##    ##     ##  ##   ##  ##     ##  ##  ####  ## ##           ####  ##  ##   ##  #### #### ##       
-   ##    ########  ##     ## ##     ##  ##  ## ## ## ##   ####    ## ## ## ##     ## ## ### ## ######   
-   ##    ##   ##   ######### ##     ##  ##  ##  #### ##    ##     ##  #### ######### ##     ## ##       
-   ##    ##    ##  ##     ## ##     ##  ##  ##   ### ##    ##     ##   ### ##     ## ##     ## ##       
-   ##    ##     ## ##     ## ########  #### ##    ##  ######      ##    ## ##     ## ##     ## ######## 
-                                                                                                        
-                                                                                                        
-                                                                                                        
-####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+#MARK: Trading names
 tradingname=$(xmlstarlet sel -t -m "response/results/result/bookingdetails/@tradingname" -v . -n  "${file}" )
 echo "Trading Name: ${tradingname}"
-echo "Whitelist: ${ca_trading_name_whitelist}"
+echo "Whitelist: ${ca_trading_name_whitelist:-0}"
 
 
 # shellcheck disable=SC2154
 if [[ ",${ca_trading_name_whitelist}," != *"${tradingname}"* ]]; then
     echo "This booking is a trade account"
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-	DELETE FROM ${ca_db_table_prefix}_portfolios WHERE id = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_document WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_attachment WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix}_portfolio_session WHERE bookingid = ${bookingid};"
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolios WHERE id = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_details WHERE id = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_transfer WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cruise WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cabins WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_flight WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_segments WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attraction WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_accom WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_passenger WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_ticket WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_insurance WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_document WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attachment WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_session WHERE bookingid = ${bookingid};"
     exit 1
 fi
 
 # if [ "${tradingname}" = "Explorations by Norwegian - Trade Partners" ] || [ "${tradingname}" = "My Cruises River Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises - Trade Partners" ] || [ "${tradingname}" = "My Cruises Touring Collection - Trade Partners" ] || [ "${tradingname}" = "MyCruises Trade" ] || [ "${tradingname}" = "My Holiday Touring Trade" ] || [ "${tradingname}" = "MyCruises River Collection - Trade Partners" ] || [ "${tradingname}" = "My Cruises Exclusive Luxury Collection - Trade Partners" ] || [ "${tradingname}" = "Flight Centre Exclusives - Trade Partners" ] ;then
 
-# mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-# DELETE FROM ${ca_db_table_prefix}_portfolios WHERE id = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_document WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_attachment WHERE bookingid = ${bookingid};
-# DELETE FROM ${ca_db_table_prefix}_portfolio_session WHERE bookingid = ${bookingid};"
+# mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolios WHERE id = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_details WHERE id = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_transfer WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cruise WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cabins WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_flight WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_segments WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attraction WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_accom WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_passenger WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_ticket WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_insurance WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_document WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attachment WHERE bookingid = ${bookingid};
+# DELETE FROM ${ca_db_table_prefix:-0}_portfolio_session WHERE bookingid = ${bookingid};"
 # exit
 # fi
 
 
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/passengers" -v passenger_details $file
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/@middlename" -v booking_details_middlename $file
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/passengers" -v passenger_details "$file"
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/@middlename" -v booking_details_middlename "$file"
 
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/transfers" -v transfers_element $file
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/cruise" -v cruise_element $file
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/transfers" -v transfers_element "$file"
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/cruise" -v cruise_element "$file"
 #xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/cruise_element/@status" -v cabins_status ${file}
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/flight" -v flight_element $file
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/attraction" -v attraction_element $file
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/accom" -v accom_element $file 
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/ticket" -v ticket_element $file 
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/insurance" -v insurance_element $file 
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/flight" -v flight_element "$file"
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/attraction" -v attraction_element "$file"
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/accom" -v accom_element "$file" 
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/ticket" -v ticket_element "$file" 
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/insurance" -v insurance_element "$file" 
 
 
 
 
 
-mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-DELETE FROM ${ca_db_table_prefix}_portfolio_details WHERE id = ${bookingid};
+mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_details WHERE id = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
-INTO TABLE ${ca_db_table_prefix}_portfolio_details 
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_details 
 ROWS IDENTIFIED BY '<bookingdetails>'
 	(@id,
 	additionaltaxes,
@@ -268,11 +254,11 @@ ROWS IDENTIFIED BY '<bookingdetails>'
 	SET 
 	id = ${bookingid};
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_transfer WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_transfer WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_transfer
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_transfer
 ROWS IDENTIFIED BY '<transfers_element>'
 	(accommodation,
 	additionalinfo,
@@ -332,11 +318,11 @@ ROWS IDENTIFIED BY '<transfers_element>'
 	vehicle,
 	voucherurl);
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_cruise WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cruise WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_cruise
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_cruise
 ROWS IDENTIFIED BY '<cruise_element>'
 	(additionalinfo,
 	airportcode,
@@ -406,10 +392,10 @@ ROWS IDENTIFIED BY '<cruise_element>'
 
 
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cabins WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
-INTO TABLE ${ca_db_table_prefix}_portfolio_cabins
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_cabins
 ROWS IDENTIFIED BY '<cabins>'
 	(accessibilitycabin,
 	bedconfig,
@@ -432,13 +418,13 @@ ROWS IDENTIFIED BY '<cabins>'
 	sideofship,
 	status);
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_cabins WHERE status = 'hidden' AND bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cabins WHERE status = 'hidden' AND bookingid = ${bookingid};
 
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_flight WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
-INTO TABLE ${ca_db_table_prefix}_portfolio_flight
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_flight
 ROWS IDENTIFIED BY '<flight_element>'
 	(atol,
 	bookingformreceived,
@@ -503,12 +489,12 @@ ROWS IDENTIFIED BY '<flight_element>'
 	vendorreference,
 	voucherurl);
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_flight WHERE status IN ('hidden','cancelled');
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_flight WHERE status IN ('hidden','cancelled');
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_segments WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
-INTO TABLE ${ca_db_table_prefix}_portfolio_segments
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_segments
 ROWS IDENTIFIED BY '<itineraries>'
 (arrivaldate,
 arrivaltime,
@@ -550,13 +536,13 @@ status)
 SET 
 bookingid = ${bookingid};
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_segments WHERE status IN ('hidden','cancelled');
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_segments WHERE status IN ('hidden','cancelled');
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_attraction WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attraction WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_attraction
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_attraction
 ROWS IDENTIFIED BY '<attraction_element>'
 (
 	additionalinfo,
@@ -608,11 +594,11 @@ ROWS IDENTIFIED BY '<attraction_element>'
 	voucherurl
 );
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_accom WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_accom WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_accom
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_accom
 ROWS IDENTIFIED BY '<accom_element>'
 (
 	additionalinfo,
@@ -682,11 +668,11 @@ ROWS IDENTIFIED BY '<accom_element>'
 	voucherurl
 );
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_passenger WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_passenger WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_passenger
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_passenger
 ROWS IDENTIFIED BY '<passenger_details>'
 (
 	address1,
@@ -755,11 +741,11 @@ ROWS IDENTIFIED BY '<passenger_details>'
 	type
 );
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_ticket WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_ticket WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_ticket
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_ticket
 ROWS IDENTIFIED BY '<ticket_element>'
 (
 	additionalinfo,
@@ -808,11 +794,11 @@ ROWS IDENTIFIED BY '<ticket_element>'
 	confirmationreceived
 );
 
-DELETE FROM ${ca_db_table_prefix}_portfolio_insurance WHERE bookingid = ${bookingid};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_insurance WHERE bookingid = ${bookingid};
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE ${ca_db_table_prefix}_portfolio_insurance
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_insurance
 ROWS IDENTIFIED BY '<insurance_element>'
 (
 	additionalinfo,

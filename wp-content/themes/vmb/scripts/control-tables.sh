@@ -1,13 +1,13 @@
 #!/bin/bash
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-sed -i -e 's/\r$//' $script_path/config.sh
-source $script_path/config.sh
-source $script_path/functions.sh
+
+# shellcheck disable=SC1091
+source "${script_path}/functions.sh"
 
 tablename=$1
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_transfer" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_transfer" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -72,8 +72,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_transfer" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_cruise" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_cruise" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -146,8 +146,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_cruise" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_flight" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_flight" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -217,8 +217,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_flight" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_attraction" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_attraction" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -273,8 +273,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_attraction" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_accom" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_accom" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -347,8 +347,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_accom" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_passenger" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_passenger" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -421,8 +421,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_passenger" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_document" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_document" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -436,8 +436,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_document" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_available_document" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_available_document" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -451,8 +451,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_available_document" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_attachment" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_attachment" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -466,8 +466,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_attachment" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_payment_methods" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_payment_methods" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -494,8 +494,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_payment_methods" ];then
 	) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_ticket" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_ticket" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -548,8 +548,8 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_ticket" ];then
 	) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
-if [ "$tablename" = "${ca_db_table_prefix}_portfolio_insurance" ];then
-	mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_insurance" ];then
+	mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 	DROP TABLE IF EXISTS $tablename;
 
 	CREATE TABLE $tablename  (
@@ -596,10 +596,10 @@ if [ "$tablename" = "${ca_db_table_prefix}_portfolio_insurance" ];then
 fi
 
 
-new_column=$(mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; SHOW COLUMNS FROM ${ca_db_table_prefix}_portfolio_segments LIKE 'bookingreference';")
+new_column=$(mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; SHOW COLUMNS FROM ${ca_db_table_prefix:-0}_portfolio_segments LIKE 'bookingreference';")
 if [ -z "${new_column}" ];then 
   mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; 
-  ALTER TABLE ${ca_db_table_prefix}_portfolio_segments
+  ALTER TABLE ${ca_db_table_prefix:-0}_portfolio_segments
   ADD COLUMN bookingreference varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;"
 else
   echo "new_column = ${new_column}" > /dev/null 2>&1

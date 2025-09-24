@@ -2,7 +2,7 @@
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # shellcheck disable=SC1091
-source "${script_path}/config.sh"
+source "${script_path}/functions.sh"
 
 file=${script_path:-0}/xml/listmodifiedportfolios.xml
 
@@ -24,7 +24,7 @@ curl -o "$file" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl
 		-H "Content-Type: application/x-www-form-urlencoded" \
 		-d "$xml" 
 
-mysql --login-path=local -N --execute="USE ${ca_db_name:-0};
+mysql --login-path=local --local-infile=1 -N --execute="USE ${ca_db_name:-0};
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
 INTO TABLE ${ca_db_table_prefix:-0}_portfolios 

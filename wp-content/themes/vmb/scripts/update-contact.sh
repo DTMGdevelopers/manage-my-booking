@@ -1,8 +1,9 @@
 #!/bin/bash
+
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-sed -i -e 's/\r$//' $script_path/config.sh
-source $script_path/config.sh
-source $script_path/functions.sh
+
+# shellcheck disable=SC1091
+source "${script_path}/functions.sh"
 
 bookingid=$1
 
@@ -12,24 +13,24 @@ file=$script_path/xml/getportfolio-$bookingid.xml
 
 xml='xml=<?xml version="1.0"?>
 <request xmlns="http://fusionapi.traveltek.net/1.0/xsds"> 
-    <auth username="'${ca_tt_username}'" password="'${ca_tt_password}'" /> 
+    <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" /> 
     <method action="getportfolio" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" externalreference="" />
 </request>'
 
-curl -o $file -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/getportfolio" \
+curl -o "$file" -X POST --url "https://fusionapi.traveltek.net/1.0/backoffice.pl/getportfolio" \
 		-H "Content-Type: application/x-www-form-urlencoded" \
 		-d "$xml" 
 
 #REMOVE THE NAMESPACE FROM THE XML OR XMLSTARLET CAN PROCESS IT
-sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' $file
-xmlstarlet ed --inplace -r "response/results/result/bookingdetails/passengers" -v passenger_details $file
+sed -i 's/xmlns="http:\/\/fusionapi.traveltek.net\/1.0\/xsds"/ /g' "$file"
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/passengers" -v passenger_details "$file"
 
-mysql --login-path=local --skip-column-names --local-infile --execute="USE "$ca_db_name";
-DELETE FROM "$ca_db_table_prefix"_portfolio_transfer WHERE bookingid = $bookingid;
+mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_transfer WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_transfer
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_transfer
 ROWS IDENTIFIED BY '<transfers>'
 	(accommodation,
 	additionalinfo,
@@ -89,11 +90,11 @@ ROWS IDENTIFIED BY '<transfers>'
 	vehicle,
 	voucherurl);
 
-DELETE FROM "$ca_db_table_prefix"_portfolio_cruise WHERE bookingid = $bookingid;
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_cruise WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_cruise
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_cruise
 ROWS IDENTIFIED BY '<cruise>'
 	(additionalinfo,
 	airportcode,
@@ -161,11 +162,11 @@ ROWS IDENTIFIED BY '<cruise>'
 	vatrequirement,
 	voucherurl);
 
-DELETE FROM "$ca_db_table_prefix"_portfolio_flight WHERE bookingid = $bookingid;
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_flight WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_flight
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_flight
 ROWS IDENTIFIED BY '<flight>'
 	(
 	atol,
@@ -230,11 +231,11 @@ ROWS IDENTIFIED BY '<flight>'
 	vatrequirement,
 	voucherurl);
 
-DELETE FROM "$ca_db_table_prefix"_portfolio_attraction WHERE bookingid = $bookingid;
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attraction WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_attraction
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_attraction
 ROWS IDENTIFIED BY '<attraction>'
 (
 	additionalinfo,
@@ -286,11 +287,11 @@ ROWS IDENTIFIED BY '<attraction>'
 	voucherurl
 );
 
-DELETE FROM "$ca_db_table_prefix"_portfolio_accom WHERE bookingid = $bookingid;
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_accom WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_accom
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_accom
 ROWS IDENTIFIED BY '<accom>'
 (
 	additionalinfo,
@@ -360,11 +361,11 @@ ROWS IDENTIFIED BY '<accom>'
 	voucherurl
 );
 
-DELETE FROM "$ca_db_table_prefix"_portfolio_passenger WHERE bookingid = $bookingid;
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_passenger WHERE bookingid = $bookingid;
 
 LOAD XML LOCAL INFILE '$file' 
 REPLACE
-INTO TABLE "$ca_db_table_prefix"_portfolio_passenger
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_passenger
 ROWS IDENTIFIED BY '<passenger_details>'
 (
 	address1,
