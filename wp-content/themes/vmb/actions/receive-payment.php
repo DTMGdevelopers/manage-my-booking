@@ -9,7 +9,7 @@
 		}
 	}
 
-	wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', home_url().' Payment Received (1/3)', [$_POST, $_SERVER]);
+	wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', home_url().' Payment Received (1/3)', json_encode([$_POST, $_SERVER]));
 
 	if (isset($_POST) && !empty($_POST['xml'])) {
 
