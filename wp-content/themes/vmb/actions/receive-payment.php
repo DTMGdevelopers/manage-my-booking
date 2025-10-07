@@ -9,7 +9,7 @@
 		}
 	}
 
-	wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', 'VMB Payment Received (1/3)', [$_POST, $_SERVER]);
+	wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', home_url().' Payment Received (1/3)', [$_POST, $_SERVER]);
 
 	if (isset($_POST) && !empty($_POST['xml'])) {
 
@@ -22,7 +22,7 @@
 		//$card_type = sanitize_text_field((string)$array->card_type);
 		//$amount = sanitize_text_field((string)$array->amount);
 
-		wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', 'VMB Payment Processed (2/3)', json_encode($array));
+		wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', home_url().' Payment Processed (2/3)', json_encode($array));
 
 		file_put_contents(SCRIPTSPATH.'xml/book-'.wp_date('Y-m-d-h-i-s').'.xml', $xml);
 
@@ -32,7 +32,7 @@
 			$thisPayment->SaveXML($xml);
 			$thisPayment->Complete();
 
-			wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', 'VMB Payment Completed (3/3)', 'Session: '.$session_key.', Status: '.$status);
+			wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', home_url().' Payment Completed (3/3)', 'Session: '.$session_key.', Status: '.$status);
 		}
 
 	}
