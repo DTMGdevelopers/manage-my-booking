@@ -24,7 +24,7 @@
 
 		//wp_mail('craig@iprogress.co.uk,peter@iprogress.co.uk', 'VMB Payment Response 2', json_encode($array));
 
-		file_put_contents(SCRIPTSPATH.'/xml/book-'.wp_date('Y-m-d-h-i-s').'.xml', $xml);
+		file_put_contents(SCRIPTSPATH.'xml/book-'.wp_date('Y-m-d-h-i-s').'.xml', $xml);
 
 		if (!empty($session_key) && !empty($status) && $status === 'success') {
 
