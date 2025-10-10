@@ -8,28 +8,31 @@ source "${script_path}/functions.sh"
 bookingid=${1}
 outstanding=${2}
 
-
-# file=$script_path/xml/getportfolio-${bookingid}.xml
-# sid=$(xmlstarlet sel -t -m "/response/results/result/bookingdetails/@sid" -v . -n $file )
+file=$script_path/xml/getportfolio-${bookingid}.xml
+#sid=$(xmlstarlet sel -t -m "/response/results/result/bookingdetails/@sid" -v . -n $file )
 # #sid=$(mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0}; SELECT sid FROM ${ca_db_table_prefix:-0}_portfolio_details  WHERE bookingid = ${bookingid};")
+
+#echo "Booking ID: ${bookingid} - SID: ${sid}"
 
 if [ -z "${outstanding}" ];then
 xml='xml=<?xml version="1.0"?>
   <request>
     <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" /> 
-    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${ca_tt_sid:-0}'" currency="'${ca_tt_currency:-0}'" />
+    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${sid:-0}'" currency="'${ca_tt_currency:-0}'" />
   </request>'
 else
 xml='xml=<?xml version="1.0"?>
   <request>
     <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" /> 
-    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${ca_tt_sid:-0}'" currency="'${ca_tt_currency:-0}'" outstanding="'${outstanding}'" />
+    <method action="createsession" sitename="'${ca_tt_sitename:-0}'" status="Live" sid="'${sid:-0}'" currency="'${ca_tt_currency:-0}'" outstanding="'${outstanding}'" />
   </request>'
 fi
 
-file=$script_path/xml/createsession-${bookingid}.xml
+#echo "$xml"
 
-curl -s -o "$file" -X POST --url "'${ca_tt_endpoint:-0}'" \
+file="${script_path}/xml/createsession-${bookingid}.xml"
+
+curl -s -o "$file" -X POST --url "https://fusionapi.traveltek.net/0.9/interface.pl"  \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "$xml" 
 

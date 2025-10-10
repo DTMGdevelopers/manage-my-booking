@@ -1,0 +1,4 @@
+AuthUserFile /sites/vmb.nz.digitaltravel.network/files/wp-content/themes/vmb/scripts/xml/.htpasswd
+AuthType Basic
+AuthName "DTMG restricted Area"
+Require valid-user
