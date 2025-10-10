@@ -36,7 +36,7 @@
     		$booking = $wpdb->get_row($sql, 'ARRAY_A');
 
     		if (!empty($booking['id'])) {
-	    		file_put_contents(SCRIPTSPATH.'/xml/book-'.$booking['id'].'.xml', $xml);
+	    		file_put_contents(SCRIPTSPATH.'xml/book-'.$booking['id'].'.xml', $xml);
 	    	}
 	    }
 

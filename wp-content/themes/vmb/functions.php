@@ -296,3 +296,20 @@
 		}
 
 		add_shortcode('currency', 'shortcode_currency');
+
+
+		function brevo_SMTP($phpmailer) {
+			if (defined('BREVO_API')) {
+				$phpmailer->isSMTP();
+				$phpmailer->Port = 587;
+				$phpmailer->SMTPAuth = true;
+				$phpmailer->SMTPSecure = false;
+				$phpmailer->Host = 'smtp-relay.brevo.com';
+				$phpmailer->From = 'noreply@cruiseappy.com';
+				$phpmailer->FromName = get_bloginfo('name');
+				$phpmailer->Username = '15a413001@smtp-brevo.com';
+				$phpmailer->Password = BREVO_API;
+			}
+		}
+
+		add_action('phpmailer_init', 'brevo_SMTP');
