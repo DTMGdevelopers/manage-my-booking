@@ -354,6 +354,30 @@
 	        return $array;
 	    }
 
+		function CarHire() {
+	    	global $wpdb;
+
+	    	$array = [];
+
+	    	$columns = [];
+
+	        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}portfolio_carhire WHERE bookingid = %d AND deleted = 0", $this->booking_id);
+	        $results = $wpdb->get_results($sql);
+
+	        if (!empty($results)) {
+
+	        	foreach ($results as $result) {
+	        		$array[] = [
+	        			'date' => $result->pickupdate,
+	        			'type' => 'carhire',
+	        			'data' => $result
+	        		];
+	        	}
+	        }
+
+	        return $array;
+		}
+
 	    function SortDates($types) {
 	    	$array = [];
 
