@@ -22,16 +22,17 @@
 			$thisAttractions = $thisBooking->Attractions();
 			$thisTickets = $thisBooking->Tickets();
 			$thisInsurance = $thisBooking->Insurance();
+			$thisCarHire= $thisBooking->CarHire();
 
-			$thisDetails = $thisBooking->SortDates([$thisTransfers, $thisHotels, $thisFlights, $thisCruises, $thisAttractions, $thisTickets, $thisInsurance]);
+			$thisDetails = $thisBooking->SortDates([$thisTransfers, $thisHotels, $thisFlights, $thisCruises, $thisAttractions, $thisTickets, $thisInsurance, $thisCarHire]);
 
 			// if (is_user_logged_in() === true) {
 			// 	echo '<pre>'.print_r($thisFlights, true).'</pre>';
 			// }
 
-			/*if ($thisBooking->BookingReference() === 'MYC-20442') {
-				echo '<pre>'. print_r($thisDetails, true) .'</pre>';
-			}*/
+			// if ($thisBooking->BookingReference() === 'MYC-76883') {
+			// 	echo '<pre>'. print_r($thisDetails, true) .'</pre>';
+			// }
 
 			$html[] = '<div id="booking-details">';
 
@@ -345,6 +346,32 @@
 
 											$html[] = '<div class="col-lg-6">';
 												$html[] = '<p class="m-0">'.wp_date('l jS F Y', strtotime($thisDetail['data']->policystartdate)).' - '.wp_date('l jS F Y', strtotime($thisDetail['data']->policyenddate)).'</p>';
+											$html[] = '</div>';
+										$html[] = '</div>';
+									$html[] = '</div>';
+
+								$html[] = '</div>';
+							}
+
+							## MARK: Car Hire
+
+							if ($thisDetail['type'] === 'carhire') {
+								$html[] = '<div>';
+									$html[] = '<h3 class="mb-4">Car Hire: '.$thisDetail['data']->bookingreference.'</h3>';
+
+									$html[] = '<div class="container">';
+										$html[] = '<div class="row align-items-center">';
+											$html[] = '<div class="col-lg-1">';
+												$html[] = '<p class="mb-0 transfer-icon d-flex align-items-center justify-content-center"><i class="fa-solid fa-car-side"></i></p>';
+											$html[] = '</div>';
+
+											$html[] = '<div class="col-lg-5">';
+												$html[] = '<p class="m-0"><strong>'.$thisDetail['data']->suppliername.'</strong><br>'.$thisDetail['data']->freetext.'</p>';
+											$html[] = '</div>';
+
+											$html[] = '<div class="col-lg-6">';
+												$html[] = '<p class="m-0">Pick-up: '.wp_date(get_option('date_format').', '.get_option('time_format'), strtotime($thisDetail['data']->pickupdate)).' - '.$thisDetail['data']->pickupdetail.'</p>';
+												$html[] = '<p class="m-0">Drop-off: '.wp_date(get_option('date_format').', '.get_option('time_format'), strtotime($thisDetail['data']->dropoffdate)).' - '.$thisDetail['data']->dropoffdetail.'</p>';
 											$html[] = '</div>';
 										$html[] = '</div>';
 									$html[] = '</div>';
