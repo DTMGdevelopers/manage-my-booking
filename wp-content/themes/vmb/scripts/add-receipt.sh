@@ -42,7 +42,7 @@ fi
 xml='xml=<?xml version="1.0"?>
   <request xmlns="http://fusionapi.traveltek.net/1.0/xsds">
     <auth username="'${ca_tt_username:-0}'" password="'${ca_tt_password:-0}'" />
-    <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee}'" transactionref="'${transactionref-0}'" cardno="'${cardno}'" useportfoliobranch="1" />
+    <method action="addreceipt" sitename="'${ca_tt_sitename:-0}'" bookingid="'${bookingid}'" paymentmethodid="'${paymentmethodid}'" creditvalue="'${amount:-0}'" authcode="'${authcode}'" reference="'${reference}'" handlingfee="'${handlingfee:-0}'" transactionref="'${transactionref-0}'" cardno="'${cardno}'" useportfoliobranch="1" />
   </request>'
 
 echo "$xml" | tee "${script_path}/xml/call-addreceipt-$bookingid.xml"
