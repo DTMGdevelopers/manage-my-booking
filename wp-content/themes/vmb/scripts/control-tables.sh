@@ -595,6 +595,34 @@ if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_insurance" ];then
 	) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
 fi
 
+if [ "$tablename" = "${ca_db_table_prefix:-0}_portfolio_carhire " ];then
+mysql --login-path=local -N --local-infile --execute="USE ${ca_db_name:-0};
+DROP TABLE IF EXISTS $tablename;
+CREATE TABLE IF NOT EXISTS ${ca_db_table_prefix:-0}_portfolio_carhire (
+	\`id\` INT PRIMARY KEY AUTO_INCREMENT,
+	\`bookingid\` INT,
+	\`bookingreference\` VARCHAR(64),
+	\`supplier\` VARCHAR(128),
+	\`supplierid\` INT,
+	\`suppliername\` VARCHAR(128),
+	\`pickupdate\` DATETIME,
+	\`dropoffdate\` DATETIME,
+	\`pickupdetail\` VARCHAR(255),
+	\`dropoffdetail\` VARCHAR(255),
+	\`vehicle\` VARCHAR(128),
+	\`unitsrequired\` INT,
+	\`sellprice\` DECIMAL(10,2),
+	\`nettprice\` DECIMAL(10,2),
+	\`grossprice\` DECIMAL(10,2),
+	\`vat\` DECIMAL(10,2),
+	\`status\` VARCHAR(64),
+	\`ownerid\` INT,
+	\`datebooked\` DATETIME,
+	\`deleted\` TINYINT(1) DEFAULT 0,
+	\`additionalinfo\` TEXT,
+	PRIMARY KEY (\`id\`, \`bookingid\`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;"
+fi
 
 new_column=$(mysql --login-path=local -N --execute="USE ${ca_db_name:-0}; SHOW COLUMNS FROM ${ca_db_table_prefix:-0}_portfolio_segments LIKE 'bookingreference';")
 if [ -z "${new_column}" ];then 

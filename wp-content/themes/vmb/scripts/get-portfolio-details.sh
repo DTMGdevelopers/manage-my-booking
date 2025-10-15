@@ -54,7 +54,8 @@ if [[ ",${ca_trading_name_whitelist}," != *"${tradingname}"* ]]; then
 	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_insurance WHERE bookingid = ${bookingid};
 	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_document WHERE bookingid = ${bookingid};
 	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_attachment WHERE bookingid = ${bookingid};
-	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_session WHERE bookingid = ${bookingid};"
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_session WHERE bookingid = ${bookingid};
+	DELETE FROM ${ca_db_table_prefix:-0}_portfolio_carhire WHERE bookingid = ${bookingid};"
     exit 1
 fi
 
@@ -91,10 +92,7 @@ xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/elem
 xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/accom" -v accom_element "$file" 
 xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/ticket" -v ticket_element "$file" 
 xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/insurance" -v insurance_element "$file" 
-
-
-
-
+xmlstarlet ed --inplace -r "response/results/result/bookingdetails/elements/element/carhire" -v carhire_element "$file" 
 
 mysql --login-path=local --skip-column-names --local-infile --execute="USE ${ca_db_name:-0};
 DELETE FROM ${ca_db_table_prefix:-0}_portfolio_details WHERE id = ${bookingid};
@@ -839,4 +837,30 @@ ROWS IDENTIFIED BY '<insurance_element>'
 	vat,
 	vatrequirement,
 	voucherurl
-);"
+);
+
+DELETE FROM ${ca_db_table_prefix:-0}_portfolio_carhire WHERE bookingid = ${bookingid};
+
+LOAD XML LOCAL INFILE '$file' 
+INTO TABLE ${ca_db_table_prefix:-0}_portfolio_carhire
+ROWS IDENTIFIED BY '<carhire_element>'
+	(bookingid, 
+	bookingreference, 
+	supplier, 
+	supplierid, 
+	suppliername, 
+	pickupdate, 
+	dropoffdate, 
+	pickupdetail, 
+	dropoffdetail, 
+	vehicle, 
+	unitsrequired, 
+	sellprice, 
+	nettprice, 
+	grossprice, 
+	vat, 
+	status, 
+	ownerid, 
+	datebooked, 
+	deleted, 
+	additionalinfo);"
